@@ -126,7 +126,7 @@ jobs:
         run: mkdir -p /tmp/exasol-jdbc-log/
       - name: Maven Tests
         id: tests
-        run: $MAVEN test ${MAVEN_TEST} -Dsurefire.runOrder.random.seed=666569662199 -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
+        run: $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
       - name: Print disk space after tests
         if: ${{ always() }}
         run: df -h
