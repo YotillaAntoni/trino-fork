@@ -16,12 +16,14 @@ package io.trino.plugin.exasol;
 
 import com.exasol.containers.ExasolContainer;
 import com.exasol.containers.ExasolService;
+import com.exasol.containers.ExitType;
 import io.trino.testing.sql.JdbcSqlExecutor;
 import org.intellij.lang.annotations.Language;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -47,7 +49,9 @@ public class TestingExasolServer
 
     public TestingExasolServer()
     {
-        container = new ExasolContainer<>("8.27.0").withRequiredServices(ExasolService.JDBC);
+        container = new ExasolContainer<>("8.27.0")
+                .withRequiredServices(ExasolService.JDBC)
+                .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY);
         cleanup = startOrReuse(container);
         executeAsSys(format("CREATE USER %s IDENTIFIED BY \"%s\"", TEST_USER, TEST_PASSWORD));
         executeAsSys("GRANT CREATE SESSION TO " + TEST_USER);
