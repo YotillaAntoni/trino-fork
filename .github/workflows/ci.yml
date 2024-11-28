@@ -91,22 +91,6 @@ jobs:
             - { modules: plugin/trino-exasol }
             - { modules: plugin/trino-exasol }
             - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
-            - { modules: plugin/trino-exasol }
           EOF
           ./.github/bin/build-matrix-from-impacted.py -v -i gib-impacted.log -m .github/test-matrix.yaml -o matrix.json
           echo "Matrix: $(jq '.' matrix.json)"
@@ -140,13 +124,9 @@ jobs:
           $MAVEN clean install ${MAVEN_FAST_INSTALL} ${MAVEN_GIB} -am -pl "${{ matrix.modules }}"
       - name: Create dir for Exasol JDBC driver logs
         run: mkdir -p /tmp/exasol-jdbc-log/
-      #- name: Enable testcontainer reuse
-      #  run: echo 'testcontainers.reuse.enable=true' > "$HOME/.testcontainers.properties"
       - name: Maven Tests
         id: tests
         run: $MAVEN test ${MAVEN_TEST} -Dsurefire.runOrder.random.seed=666569662199 -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
-        env:
-          TESTCONTAINERS_REUSE_ENABLE: true
       - name: Print disk space after tests
         if: ${{ always() }}
         run: df -h
