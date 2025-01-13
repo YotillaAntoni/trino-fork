@@ -49,7 +49,7 @@ public class TestingExasolServer
 
     public TestingExasolServer()
     {
-        container = new ExasolContainer<>("8.27.0")
+        container = new ExasolContainer<>("8.32.0")
                 .withRequiredServices(ExasolService.JDBC)
                 .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY);
         cleanup = startOrReuse(container);
