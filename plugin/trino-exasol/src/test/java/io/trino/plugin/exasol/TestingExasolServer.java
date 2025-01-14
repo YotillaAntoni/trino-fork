@@ -43,7 +43,7 @@ public class TestingExasolServer
     public static final String TEST_SCHEMA = "tpch";
     public static final String TEST_PASSWORD = "trino_test_password";
 
-    private static final long MAX_MEMORY = 2_147_483_648L * 4;
+    private static final long MAX_MEMORY = 2_147_483_648L * 2;
 
     private final ExasolContainer<?> container;
 
