@@ -140,7 +140,8 @@ jobs:
         run: mkdir -p /tmp/exasol-jdbc-log/
       - name: Print memory stats
         run: free -h
-      - name: Start memory monitoring in the background
+      - name: Maven Tests
+        id: tests
         run: |
           (
             while true; do
@@ -151,13 +152,7 @@ jobs:
             done
           ) &
           echo $! > monitor_pid.txt
-      - name: Maven Tests
-        id: tests
-        run: |
-          echo $MAVEN_OPTS
           $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
-      - name: Stop memory monitoring
-        run: |
           kill $(cat monitor_pid.txt)
           rm monitor_pid.txt
       - name: Print memory stats
