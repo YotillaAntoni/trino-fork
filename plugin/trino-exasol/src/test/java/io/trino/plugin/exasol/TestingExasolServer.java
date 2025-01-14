@@ -65,7 +65,6 @@ public class TestingExasolServer
                 .withRequiredServices(ExasolService.JDBC)
                 .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
                 .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
-                        .withSecurityOpts(List.of("apparmor=unconfined"))
                         .withMemory(MAX_MEMORY)
                         .withMemorySwap(SWAP_MEMORY)
                         .withMemoryReservation(RESERVED_MEMORY)
