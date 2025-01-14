@@ -130,11 +130,12 @@ jobs:
           $MAVEN clean install ${MAVEN_FAST_INSTALL} ${MAVEN_GIB} -am -pl "${{ matrix.modules }}"
       - name: Create dir for Exasol JDBC driver logs
         run: mkdir -p /tmp/exasol-jdbc-log/
-      - name: Allow unprivileged user namespaces
-        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: Disable app armor for rsyslogd
+        run: sudo aa-disable /etc/apparmor.d/usr.sbin.rsyslogd
       - name: Maven Tests
         id: tests
         run: |
+          sudo aa-status
           #(
           #  while true; do
           #    echo "Top memory-consuming process at $(date):"
