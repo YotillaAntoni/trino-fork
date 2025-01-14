@@ -144,7 +144,7 @@ jobs:
           #) &
           tail -f /var/log/syslog &
           echo $! > monitor_pid.txt
-          $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
+          $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }} -Dsurefire.runOrder.random.seed=498044423542
           kill $(cat monitor_pid.txt)
           rm monitor_pid.txt
       - name: "Generate Unique Artifact Name"
