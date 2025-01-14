@@ -51,7 +51,10 @@ public class TestingExasolServer
     {
         container = new ExasolContainer<>("8.32.0")
                 .withRequiredServices(ExasolService.JDBC)
-                .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY);
+                .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
+                .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
+                        .withMemory(4L * 1024 * 1024 * 1024)
+                        .withMemorySwap(4L * 1024 * 1024 & 1024));
         cleanup = startOrReuse(container);
         executeAsSys(format("CREATE USER %s IDENTIFIED BY \"%s\"", TEST_USER, TEST_PASSWORD));
         executeAsSys("GRANT CREATE SESSION TO " + TEST_USER);
