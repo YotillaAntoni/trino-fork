@@ -43,6 +43,8 @@ public class TestingExasolServer
     public static final String TEST_SCHEMA = "tpch";
     public static final String TEST_PASSWORD = "trino_test_password";
 
+    private static final long MAX_MEMORY = 2_147_483_648L;
+
     private final ExasolContainer<?> container;
 
     private final Closeable cleanup;
@@ -53,8 +55,9 @@ public class TestingExasolServer
                 .withRequiredServices(ExasolService.JDBC)
                 .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
                 .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
-                        .withMemory(4L * 1024 * 1024 * 1024)
-                        .withMemorySwap(4L * 1024 * 1024 * 1024));
+                        .withMemory(MAX_MEMORY)
+                        .withMemorySwap(MAX_MEMORY)
+                        .withOomKillDisable(true));
         cleanup = startOrReuse(container);
         executeAsSys(format("CREATE USER %s IDENTIFIED BY \"%s\"", TEST_USER, TEST_PASSWORD));
         executeAsSys("GRANT CREATE SESSION TO " + TEST_USER);
