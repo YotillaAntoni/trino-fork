@@ -62,6 +62,7 @@ public class TestingExasolServer
     public TestingExasolServer()
     {
         container = new ExasolContainer<>("8.32.0")
+                .withExposedPorts(8563)
                 .withRequiredServices(ExasolService.JDBC)
                 .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
                 .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
