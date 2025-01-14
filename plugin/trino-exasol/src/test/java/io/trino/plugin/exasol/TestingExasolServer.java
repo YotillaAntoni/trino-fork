@@ -96,7 +96,7 @@ public class TestingExasolServer
 
     public void execute(@Language("SQL") String sql, String user, String password)
     {
-        log.info("Get connection " + COUNTER.incrementAndGet());
+        log.info("Server get connection " + COUNTER.incrementAndGet());
         try (Connection connection = DriverManager.getConnection(getJdbcUrl(), getProperties(user, password));
                 Statement statement = connection.createStatement()) {
             statement.execute(sql);
@@ -105,7 +105,7 @@ public class TestingExasolServer
             throw new RuntimeException("Failed to execute statement '" + sql + "'", e);
         }
         finally {
-            log.info("Close connection " + COUNTER.decrementAndGet());
+            log.info("Server close connection " + COUNTER.decrementAndGet());
         }
     }
 
