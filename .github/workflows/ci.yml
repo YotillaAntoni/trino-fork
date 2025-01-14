@@ -138,17 +138,16 @@ jobs:
           $MAVEN clean install ${MAVEN_FAST_INSTALL} ${MAVEN_GIB} -am -pl "${{ matrix.modules }}"
       - name: Create dir for Exasol JDBC driver logs
         run: mkdir -p /tmp/exasol-jdbc-log/
-      - name: Print memory stats
-        run: free -h
       - name: Maven Tests
         id: tests
         run: |
           (
             while true; do
               echo "Top memory-consuming process at $(date):"
-              ps -eo user,pid,comm,rss,vsz,args --sort=-rss | head -n 21
+              ps -eo user,pid,comm,rss,vsz,args --sort=-rss | head -n 11
               echo "-----------------------------"
               df -h
+              free -h
               sleep 30
             done
           ) &
@@ -156,8 +155,6 @@ jobs:
           $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
           kill $(cat monitor_pid.txt)
           rm monitor_pid.txt
-      - name: Print memory stats
-        run: free -h
       - name: "Generate Unique Artifact Name"
         if: ${{ always() }}
         run: echo "UNIQUE_NAME=$RANDOM" >> $GITHUB_ENV
