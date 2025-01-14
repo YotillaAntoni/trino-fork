@@ -111,6 +111,9 @@ jobs:
       matrix: ${{ fromJson(needs.build-test-matrix.outputs.matrix) }}
     timeout-minutes: 60
     steps:
+      - name: Print docker version
+        run: |
+          sudo docker version
       - name: Disable app armor
         run: |
           sudo aa-teardown || true
