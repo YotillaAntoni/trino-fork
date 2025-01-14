@@ -43,7 +43,9 @@ public class TestingExasolServer
     public static final String TEST_SCHEMA = "tpch";
     public static final String TEST_PASSWORD = "trino_test_password";
 
-    private static final long MAX_MEMORY = 2_147_483_648L * 2;
+    private static final long ONE_GB = 1_073_741_824L;
+    private static final long MAX_MEMORY = 4 * ONE_GB;
+    private static final long RESERVED_MEMORY = 2 * ONE_GB;
 
     private final ExasolContainer<?> container;
 
@@ -57,6 +59,7 @@ public class TestingExasolServer
                 .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
                         .withMemory(MAX_MEMORY)
                         .withMemorySwap(MAX_MEMORY)
+                        .withMemoryReservation(RESERVED_MEMORY)
                         .withOomKillDisable(true));
         cleanup = startOrReuse(container);
         executeAsSys(format("CREATE USER %s IDENTIFIED BY \"%s\"", TEST_USER, TEST_PASSWORD));

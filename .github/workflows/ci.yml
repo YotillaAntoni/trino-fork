@@ -146,9 +146,9 @@ jobs:
           (
             while true; do
               echo "Top memory-consuming process at $(date):"
-              ps -eo pid,comm,%mem --sort=-%mem
+              ps -eo user,pid,comm,rss,args --sort=-rss | head -n 21
               echo "-----------------------------"
-              sleep 10
+              sleep 30
             done
           ) &
           echo $! > monitor_pid.txt
