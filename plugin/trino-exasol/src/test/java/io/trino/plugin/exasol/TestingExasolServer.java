@@ -70,6 +70,11 @@ public class TestingExasolServer
                         .withMemoryReservation(RESERVED_MEMORY)
                         .withOomKillDisable(true));
         cleanup = startOrReuse(container);
+
+        container.getExposedPorts().stream().forEach(
+                port -> log.info("Exposed port: " + port + " as " + container.getMappedPort(port))
+        );
+
         executeAsSys(format("CREATE USER %s IDENTIFIED BY \"%s\"", TEST_USER, TEST_PASSWORD));
         executeAsSys("GRANT CREATE SESSION TO " + TEST_USER);
         executeAsSys("GRANT CREATE SCHEMA TO " + TEST_USER);
