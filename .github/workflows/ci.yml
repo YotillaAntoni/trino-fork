@@ -133,16 +133,16 @@ jobs:
       - name: Maven Tests
         id: tests
         run: |
-          (
-            while true; do
-              echo "Top memory-consuming process at $(date):"
-              ps -eo user,pid,comm,rss,vsz,args --sort=-rss | head -n 11
-              echo "-----------------------------"
-              df -h
-              free -h
-              sleep 30
-            done
-          ) &
+          #(
+          #  while true; do
+          #    echo "Top memory-consuming process at $(date):"
+          #    ps -eo user,pid,comm,rss,vsz,args --sort=-rss | head -n 11
+          #    echo "-----------------------------"
+          #    free -h
+          #    sleep 30
+          #  done
+          #) &
+          tail -f /var/log/syslog &
           echo $! > monitor_pid.txt
           $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
           kill $(cat monitor_pid.txt)
