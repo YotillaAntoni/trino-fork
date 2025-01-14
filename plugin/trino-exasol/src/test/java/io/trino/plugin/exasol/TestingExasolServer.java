@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -64,6 +65,7 @@ public class TestingExasolServer
                 .withRequiredServices(ExasolService.JDBC)
                 .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
                 .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
+                        .withSecurityOpts(List.of("apparmor=unconfined"))
                         .withMemory(MAX_MEMORY)
                         .withMemorySwap(SWAP_MEMORY)
                         .withMemoryReservation(RESERVED_MEMORY)
