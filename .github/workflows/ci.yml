@@ -146,8 +146,9 @@ jobs:
           (
             while true; do
               echo "Top memory-consuming process at $(date):"
-              ps -eo user,pid,comm,rss,args --sort=-rss | head -n 21
+              ps -eo user,pid,comm,rss,vsz,args --sort=-rss | head -n 21
               echo "-----------------------------"
+              df -h
               sleep 30
             done
           ) &

@@ -45,6 +45,7 @@ public class TestingExasolServer
 
     private static final long ONE_GB = 1_073_741_824L;
     private static final long MAX_MEMORY = 4 * ONE_GB;
+    private static final long SWAP_MEMORY = 6 * ONE_GB;
     private static final long RESERVED_MEMORY = 2 * ONE_GB;
 
     private final ExasolContainer<?> container;
@@ -58,7 +59,7 @@ public class TestingExasolServer
                 .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
                 .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
                         .withMemory(MAX_MEMORY)
-                        .withMemorySwap(MAX_MEMORY)
+                        .withMemorySwap(SWAP_MEMORY)
                         .withMemoryReservation(RESERVED_MEMORY)
                         .withOomKillDisable(true));
         cleanup = startOrReuse(container);
