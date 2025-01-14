@@ -111,6 +111,9 @@ jobs:
       matrix: ${{ fromJson(needs.build-test-matrix.outputs.matrix) }}
     timeout-minutes: 60
     steps:
+      - name: Disable app armor
+        run: |
+          sudo aa-teardown || true
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # checkout all commits to be able to determine merge base for GIB
@@ -130,8 +133,6 @@ jobs:
           $MAVEN clean install ${MAVEN_FAST_INSTALL} ${MAVEN_GIB} -am -pl "${{ matrix.modules }}"
       - name: Create dir for Exasol JDBC driver logs
         run: mkdir -p /tmp/exasol-jdbc-log/
-      - name: Disable app armor
-        run: sudo service apparmor stop
       - name: Maven Tests
         id: tests
         run: |
