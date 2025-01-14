@@ -13,6 +13,7 @@
  */
 package io.trino.plugin.jdbc;
 
+import io.airlift.log.Logger;
 import io.opentelemetry.api.OpenTelemetry;
 import io.trino.plugin.jdbc.credential.CredentialPropertiesProvider;
 import io.trino.plugin.jdbc.credential.CredentialProvider;
@@ -24,6 +25,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -31,6 +33,9 @@ import static java.util.Objects.requireNonNull;
 public class DriverConnectionFactory
         implements ConnectionFactory
 {
+    private static final Logger log = Logger.get(DriverConnectionFactory.class);
+    private static final AtomicInteger COUNTER = new AtomicInteger();
+
     private final Driver driver;
     private final String connectionUrl;
     private final Properties connectionProperties;
@@ -56,6 +61,7 @@ public class DriverConnectionFactory
     public Connection openConnection(ConnectorSession session)
             throws SQLException
     {
+        log.info("Open connection " + COUNTER.incrementAndGet());
         Properties properties = getCredentialProperties(session.getIdentity());
         Connection connection = dataSource.getConnection(properties);
         checkState(connection != null, "Driver returned null connection, make sure the connection URL '%s' is valid for the driver %s", connectionUrl, driver);

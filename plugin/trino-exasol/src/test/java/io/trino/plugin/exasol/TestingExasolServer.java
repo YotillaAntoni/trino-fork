@@ -17,6 +17,7 @@ package io.trino.plugin.exasol;
 import com.exasol.containers.ExasolContainer;
 import com.exasol.containers.ExasolService;
 import com.exasol.containers.ExitType;
+import io.airlift.log.Logger;
 import io.trino.testing.sql.JdbcSqlExecutor;
 import org.intellij.lang.annotations.Language;
 
@@ -29,6 +30,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.trino.testing.containers.TestContainers.startOrReuse;
 import static java.lang.String.format;
@@ -36,6 +38,10 @@ import static java.lang.String.format;
 public class TestingExasolServer
         implements Closeable
 {
+    private static final Logger log = Logger.get(TestingExasolServer.class);
+
+    private static final AtomicInteger COUNTER = new AtomicInteger();
+
     public static final String TEST_USER = "trino_test";
     /**
      * Name of the test schema. Must not contain an underscore, required by {@link io.trino.plugin.exasol.TestExasolConnectorTest#testShowSchemasLikeWithEscape()}
@@ -90,12 +96,16 @@ public class TestingExasolServer
 
     public void execute(@Language("SQL") String sql, String user, String password)
     {
+        log.info("Get connection " + COUNTER.incrementAndGet());
         try (Connection connection = DriverManager.getConnection(getJdbcUrl(), getProperties(user, password));
                 Statement statement = connection.createStatement()) {
             statement.execute(sql);
         }
         catch (SQLException e) {
             throw new RuntimeException("Failed to execute statement '" + sql + "'", e);
+        }
+        finally {
+            log.info("Close connection " + COUNTER.decrementAndGet());
         }
     }
 
