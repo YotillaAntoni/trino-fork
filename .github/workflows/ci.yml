@@ -140,7 +140,9 @@ jobs:
         run: mkdir -p /tmp/exasol-jdbc-log/
       - name: Maven Tests
         id: tests
-        run: $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
+        run: |
+          echo $MAVEN_OPTS
+          $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
       - name: "Generate Unique Artifact Name"
         if: ${{ always() }}
         run: echo "UNIQUE_NAME=$RANDOM" >> $GITHUB_ENV
