@@ -138,31 +138,9 @@ jobs:
         run: |
           export MAVEN_OPTS="${MAVEN_INSTALL_OPTS}"
           $MAVEN clean install ${MAVEN_FAST_INSTALL} ${MAVEN_GIB} -am -pl "${{ matrix.modules }}"
-      - name: Create dir for Exasol JDBC driver logs
-        run: mkdir -p /tmp/exasol-jdbc-log/
       - name: Maven Tests
         id: tests
         run: $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }}
-      - name: "Generate Unique Artifact Name"
-        if: ${{ always() }}
-        run: echo "UNIQUE_NAME=$RANDOM" >> $GITHUB_ENV
-      - name: "Upload Exasol JDBC driver logs"
-        uses: actions/upload-artifact@v4
-        if: ${{ always() && contains(matrix.modules, 'plugin/trino-exasol') }}
-        with:
-          path: /tmp/exasol-jdbc-log/
-          name: exasol-jdbc-log-${{ env.UNIQUE_NAME }}
-          retention-days: 3
-          if-no-files-found: error
-      - name: "Upload Exasol Docker-DB logs"
-        uses: actions/upload-artifact@v4
-        if: ${{ always() && contains(matrix.modules, 'plugin/trino-exasol') }}
-        with:
-          path: /tmp/db-log/
-          name: exasol-db-log-${{ env.UNIQUE_NAME }}
-          retention-days: 3
-          if-no-files-found: error
-
       - name: Sanitize artifact name
         if: always()
         run: |
