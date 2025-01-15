@@ -143,7 +143,7 @@ jobs:
           (
             while true; do
               echo "Used ports *327*"
-              sudo ss -atpn | grep 327
+              sudo ss -atpn || true
               echo "-----------------------------"
               sleep 10
             done
