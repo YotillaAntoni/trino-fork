@@ -16,14 +16,12 @@ package io.trino.plugin.exasol;
 
 import com.exasol.containers.ExasolContainer;
 import com.exasol.containers.ExasolService;
-import com.exasol.containers.ExitType;
 import io.trino.testing.sql.JdbcSqlExecutor;
 import org.intellij.lang.annotations.Language;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
