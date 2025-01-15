@@ -114,6 +114,7 @@ jobs:
       - name: Print docker version
         run: |
           sudo docker version
+          sudo ss -atpn || true
       - name: Disable app armor
         run: |
           sudo aa-teardown || true
@@ -139,13 +140,8 @@ jobs:
       - name: Maven Tests
         id: tests
         run: |
-          sudo ss -atpn | grep 327
-          #sudo aa-status
           (
             while true; do
-          #    #echo "Top memory-consuming process at $(date):"
-          #    #ps -eo user,pid,comm,rss,vsz,args --sort=-rss | head -n 11
-          #    #echo "-----------------------------"
               echo "Used ports *327*"
               sudo ss -atpn | grep 327
               echo "-----------------------------"
