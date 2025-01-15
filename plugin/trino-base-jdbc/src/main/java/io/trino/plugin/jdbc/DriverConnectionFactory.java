@@ -13,6 +13,7 @@
  */
 package io.trino.plugin.jdbc;
 
+import io.airlift.log.Logger;
 import io.opentelemetry.api.OpenTelemetry;
 import io.trino.plugin.jdbc.credential.CredentialPropertiesProvider;
 import io.trino.plugin.jdbc.credential.CredentialProvider;
@@ -31,6 +32,8 @@ import static java.util.Objects.requireNonNull;
 public class DriverConnectionFactory
         implements ConnectionFactory
 {
+    private static final Logger log = Logger.get(DriverConnectionFactory.class);
+
     private final Driver driver;
     private final String connectionUrl;
     private final Properties connectionProperties;
@@ -46,6 +49,7 @@ public class DriverConnectionFactory
     {
         this.driver = requireNonNull(driver, "driver is null");
         this.connectionUrl = requireNonNull(connectionUrl, "connectionUrl is null");
+        log.info("DRIVER JDBC URL: " + connectionUrl);
         this.connectionProperties = new Properties();
         this.connectionProperties.putAll(requireNonNull(connectionProperties, "connectionProperties is null"));
         this.credentialPropertiesProvider = requireNonNull(credentialPropertiesProvider, "credentialPropertiesProvider is null");

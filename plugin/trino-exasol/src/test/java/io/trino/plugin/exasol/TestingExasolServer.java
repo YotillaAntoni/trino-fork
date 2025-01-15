@@ -17,6 +17,7 @@ package io.trino.plugin.exasol;
 import com.exasol.containers.ExasolContainer;
 import com.exasol.containers.ExasolService;
 import com.exasol.containers.ExitType;
+import io.airlift.log.Logger;
 import io.trino.testing.sql.JdbcSqlExecutor;
 import org.intellij.lang.annotations.Language;
 
@@ -37,6 +38,8 @@ import static java.lang.String.format;
 public class TestingExasolServer
         implements Closeable
 {
+    private static final Logger log = Logger.get(TestingExasolServer.class);
+
     public static final String TEST_USER = "trino_test";
     /**
      * Name of the test schema. Must not contain an underscore, required by {@link io.trino.plugin.exasol.TestExasolConnectorTest#testShowSchemasLikeWithEscape()}
@@ -56,19 +59,14 @@ public class TestingExasolServer
     public TestingExasolServer()
     {
         container = new ExasolContainer<>("8.32.0")
-                .withExposedPorts(8563)
                 .withRequiredServices(ExasolService.JDBC)
-                .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY)
-                .withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
-                        .withMemory(MAX_MEMORY)
-                        .withMemorySwap(SWAP_MEMORY)
-                        .withMemoryReservation(RESERVED_MEMORY)
-                        .withOomKillDisable(true));
+                .withSupportInformationRecordedAtExit(Path.of("/tmp/db-log"), ExitType.EXIT_ANY);
         cleanup = startOrReuse(container);
 
         container.getExposedPorts().stream().forEach(
                 port -> log.info("Exposed port: " + port + " as " + container.getMappedPort(port))
         );
+        log.info("CONTAINER JDBC URL: " + container.getJdbcUrl());
 
         executeAsSys(format("CREATE USER %s IDENTIFIED BY \"%s\"", TEST_USER, TEST_PASSWORD));
         executeAsSys("GRANT CREATE SESSION TO " + TEST_USER);
