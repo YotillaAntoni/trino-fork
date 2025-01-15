@@ -61,26 +61,11 @@ public class DriverConnectionFactory
     public Connection openConnection(ConnectorSession session)
             throws SQLException
     {
-        log.info("Driver open connection " + COUNTER.incrementAndGet());
+        log.info("Open connection " + COUNTER.incrementAndGet());
         Properties properties = getCredentialProperties(session.getIdentity());
         Connection connection = dataSource.getConnection(properties);
         checkState(connection != null, "Driver returned null connection, make sure the connection URL '%s' is valid for the driver %s", connectionUrl, driver);
-
-        return new ForwardingConnection() {
-            @Override
-            protected Connection delegate() throws SQLException {
-                return connection;
-            }
-
-            @Override
-            public void close() throws SQLException {
-                try {
-                    connection.close();
-                } finally {
-                    log.info("Driver close connection " + COUNTER.decrementAndGet());
-                }
-            }
-        };
+        return connection;
     }
 
     private Properties getCredentialProperties(ConnectorIdentity identity)
