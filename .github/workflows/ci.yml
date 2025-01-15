@@ -158,14 +158,6 @@ jobs:
       - name: "Generate Unique Artifact Name"
         if: ${{ always() }}
         run: echo "UNIQUE_NAME=$RANDOM" >> $GITHUB_ENV
-      - name: "Upload Exasol JDBC driver logs"
-        uses: actions/upload-artifact@v4
-        if: ${{ always() && contains(matrix.modules, 'plugin/trino-exasol') }}
-        with:
-          path: /tmp/exasol-jdbc-log/
-          name: exasol-jdbc-log-${{ env.UNIQUE_NAME }}
-          retention-days: 3
-          if-no-files-found: error
       - name: "Upload Exasol Docker-DB logs"
         uses: actions/upload-artifact@v4
         if: ${{ always() && contains(matrix.modules, 'plugin/trino-exasol') }}
