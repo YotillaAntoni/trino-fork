@@ -114,7 +114,6 @@ jobs:
       - name: Print docker version
         run: |
           sudo docker version
-          sudo ss -atpn || true
       - name: Disable app armor
         run: |
           sudo aa-teardown || true
@@ -140,16 +139,18 @@ jobs:
       - name: Maven Tests
         id: tests
         run: |
+          sudo iptables -nL
           (
             while true; do
-              echo "Used ports *327*"
-              sudo ss -atpn || true
+              echo "Used ports 32700-33000"
+              sudo ss -atupn sport ge 32700 and sport le 33000
               echo "-----------------------------"
               sleep 10
             done
           ) &
           tail -f /var/log/syslog &
           $MAVEN test ${MAVEN_TEST} -pl ${{ matrix.modules }} ${{ matrix.profile != '' && format('-P {0}', matrix.profile) || '' }} -Dsurefire.runOrder.random.seed=498044423542
+          sudo iptables -nL
       - name: "Generate Unique Artifact Name"
         if: ${{ always() }}
         run: echo "UNIQUE_NAME=$RANDOM" >> $GITHUB_ENV
